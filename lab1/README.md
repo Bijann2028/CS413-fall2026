@@ -2,8 +2,9 @@
 
 ## Student information
 
-Name: **REPLACE THIS WITH YOUR NAME**
+Name: **Bijan Nossoughi**
 
-In one sentence, what is the difference between Git and GitHub?
 
-**REPLACE THIS SENTENCE**
+
+The difference between Git and Github is that Git is a local software tool, and GitHub uses Git to store files on the cloud.
+
