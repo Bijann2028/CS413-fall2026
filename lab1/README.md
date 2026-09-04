@@ -6,5 +6,5 @@ Name: **Bijan Nossoughi**
 
 
 
-The difference between Git and Github is that Git is a local software tool, and GitHub uses Git to store files on the cloud.
+The difference between Git and GitHub is that Git is a local software tool while GitHub uses Git to store files on the cloud.
 
