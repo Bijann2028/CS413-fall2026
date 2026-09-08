@@ -27,14 +27,15 @@ To compile and run `queen.dats` directly using `patscc` in WSL/Linux:
 ```bash
 patscc -o queen queen.dats
 ./queen
+```
 
-To execute the translated Python solver:
+### To execute the translated Python solver:
 python3 queen.py
 
-To execute the unit tests for top-level functions:
+### To execute the unit tests for top-level functions:
 python3 test_queen.py
 
-Description of Tests Performed and Output Comparison
+### Description of Tests Performed and Output Comparison
 To verify that the translated Python program (queen.py) faithfully preserves the functional logic of the original ATS implementation (queen.dats), tests were conducted targeting every top-level helper function as well as full-program execution.
 
 1. Individual Top-Level Function Unit Tests (test_queen.py)
@@ -86,7 +87,7 @@ Python Output: Solution #1: (0, 4, 7, 5, 2, 6, 1, 3)
 Cross-Language Verification: A file comparison (diff -u ats_output.txt py_output.txt) confirmed 100% character-for-character equivalence across all 92 board configurations.
 
 
-AI Reflection
+### AI Reflection
 From my perspective, Gemini performed very well throughout this code translation task. The original ATS implementation uses static functional constructs, tuples, and explicit tail-recursive helper functions that can be tricky to map directly into dynamic languages. Gemini produced a syntactically clean and logic-accurate Python translation on the first pass, accurately preserving all top-level functions (board_get, board_set, safety_test1, safety_test2, search) and board tuple structures.
 
 The only functional modification I had to make was adding sys.setrecursionlimit(20000) to the top of queen.py. Python’s default call stack limit (1,000) causes a RecursionError during deep backtracking search because Python lacks ATS’s native Tail-Call Optimization (TCO). This adjustment was not an error on Gemini’s part, but rather an environment-specific runtime limitation of Python that required explicit handling.
