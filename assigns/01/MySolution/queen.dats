@@ -1,3 +1,4 @@
+#include "share/atspre_staload.hats"
 #define N 8
 
 typedef int8 = (int, int, int, int, int, int, int, int)
