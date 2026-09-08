@@ -4,7 +4,7 @@
 def calculate_total(prices, discount_percent):
     """Return the total after applying a percentage discount."""
     subtotal = sum(prices)
-    return subtotal - discount_percent
+    return subtotal * (1 - discount_percent / 100)
 
 
 def main():
