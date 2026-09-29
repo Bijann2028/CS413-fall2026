@@ -7,8 +7,7 @@ Tuesday, October 6, 2026.
 
 ## Attention
 
-Keep everything you submit in `assigns/04/MySolution/`. The instructor's
-reference implementation is in `Solution/`.
+Keep everything you submit in `assigns/04/MySolution/`.
 
 ## Objective
 
@@ -28,7 +27,7 @@ Read [README.00](README.00), the stakeholder brief. A local, single-user
 application is sufficient. User accounts, public deployment, saved test
 collections, and persistence across server restarts are not required.
 
-Use Python 3.12 or later and the supplied [lambda1.py](Solution/lambda1.py).
+Use Python 3.12 or later and the supplied [lambda1.py](./lambda1.py).
 For now, input is a single Python constructor expression of type `d0exp`, not
 a Python script or a new concrete syntax for LAMBDA. For example:
 
