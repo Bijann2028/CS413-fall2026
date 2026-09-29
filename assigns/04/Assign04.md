@@ -25,9 +25,9 @@ checker or compiler is not required.
 
 Here is the stakeholder brief:
 
- - I have just covered Software Architectures. I want my students to
- use MVC to build a web front-end for programming language system
- (where the language is LAMBDA).
+I have just covered Software Architectures. I want my students to
+use MVC to build a web front-end for programming language system
+(where the language is LAMBDA).
 
  - Input: A user can upload a file containing some code from his own
    computer
