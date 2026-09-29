@@ -2,8 +2,8 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const m = require("../lambda1-vp.js");
-const cases = require("./cases.json");
+const m = require("../lambda1_vp.js");
+const cases = require("../../TEST/cases.json");
 
 function expression([kind, ...args]) {
     args = kind === "int" ? [BigInt(args[0])]

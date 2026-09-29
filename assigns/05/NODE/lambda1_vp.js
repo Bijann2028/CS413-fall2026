@@ -1,7 +1,7 @@
 "use strict";
 
 // Visitor-based, closure-based, call-by-value LAMBDA interpreter.
-// Node.js: const { D0Eint, d0exp_evaluate } = require("./lambda1-vp.js");
+// Node.js: const { D0Eint, d0exp_evaluate } = require("./lambda1_vp.js");
 // Integer payloads use BigInt to preserve Python's arbitrary-precision integers.
 // Constructors accept bigint or safe integer Numbers (e.g. new D0Eint(42)).
 // Free-variable results are fresh JavaScript Sets; treat them as read-only.

@@ -1,4 +1,4 @@
-"""Behavioral tests for lambda1-vp.py; no third-party dependencies."""
+"""Behavioral tests for lambda1_vp.py; no third-party dependencies."""
 import dataclasses
 import importlib.util
 import json
@@ -7,7 +7,7 @@ import sys
 import unittest
 
 HERE = Path(__file__).resolve().parent
-spec = importlib.util.spec_from_file_location('lambda1_vp', HERE.parent / 'lambda1-vp.py')
+spec = importlib.util.spec_from_file_location('lambda1_vp', HERE.parent / 'lambda1_vp.py')
 m = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = m
 spec.loader.exec_module(m)

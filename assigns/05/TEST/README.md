@@ -4,17 +4,17 @@ Run from the assignment directory with Python 3.12+ and Node.js 18+:
 
 ```sh
 make -C TEST test         # Run both suites (also the default target).
-make -C TEST test-python  # Run only Python tests.
+make -C TEST test-py  # Run only Python tests.
 make -C TEST test-js      # Run only JavaScript tests.
 ```
 
-Inside `TEST`, use `make test`, `make test-python`, or `make test-js`.
+Inside `TEST`, use `make test`, `make test-py`, or `make test-js`.
 Override runtimes if needed: `make -C TEST test PYTHON=python3.12 NODE=node`.
 The equivalent direct commands are:
 
 ```sh
 python3 -m unittest discover -s TEST -p 'test_*.py' -v
-node --test TEST/test_lambda1_vp.js
+node --test NODE/TEST/test_lambda1_vp.js
 ```
 
 No third-party dependencies are needed. Both commands return a nonzero exit
@@ -33,3 +33,6 @@ shadowing, eager left-to-right evaluation, conditional branch selection, pairs,
 unbound variables, and free-variable binding rules. Each language also tests
 explicit environments, immutability, direct visitor use, and closure capture.
 JavaScript additionally tests integer input validation and independent Set results.
+
+JavaScript sources and tests live in `../NODE`; run them independently with
+`make -C NODE/TEST test` from the assignment directory.
