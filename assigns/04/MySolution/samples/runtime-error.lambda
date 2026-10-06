@@ -1,0 +1,2 @@
+# Closed, so Lint passes; interpretation fails with division by zero.
+D0Eop2("/", D0Eint(1), D0Eint(0))

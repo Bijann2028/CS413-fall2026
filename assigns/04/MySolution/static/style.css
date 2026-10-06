@@ -1,0 +1,33 @@
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #243247; background: #f2f4f8; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1050px; padding: 36px 22px; margin: auto; }
+header { margin-bottom: 28px; }
+h1 { font-size: 2.3rem; margin: 8px 0; letter-spacing: -.04em; }
+h2 { font-size: 1.15rem; margin: 0 0 18px; }
+p { line-height: 1.55; }
+.eyebrow { text-transform: uppercase; letter-spacing: .1em; font-size: .78rem; color: #53627a; }
+section { padding: 24px; margin-bottom: 20px; border: 1px solid #dce2ea; border-radius: 10px; background: white; }
+.source-bar, .controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.source-bar { margin-bottom: 20px; }
+label { display: block; font-weight: 600; margin-bottom: 7px; }
+.source-bar label { margin: 0; }
+textarea { display: block; width: 100%; resize: vertical; padding: 14px; font: 14px/1.6 Consolas, monospace; border: 1px solid #a8b4c5; border-radius: 6px; }
+textarea[readonly] { background: #f5f6f9; }
+button, select, input { font: inherit; }
+button, select { border: 1px solid #a8b4c5; border-radius: 5px; padding: 9px 14px; background: #f8faff; color: #243247; }
+button { cursor: pointer; }
+button:hover:enabled { background: #e5edf8; }
+#apply, button[data-operation="interpret"] { background: #244e88; color: white; border-color: #244e88; }
+#apply:hover:enabled, button[data-operation="interpret"]:hover:enabled { background: #193a69; }
+button:disabled, select:disabled { opacity: .5; cursor: default; }
+:focus-visible { outline: 3px solid #e39b26; outline-offset: 3px; }
+#source-info, #edit-status, #editor-help, #execute-help, footer { font-size: .88rem; color: #53627a; }
+#upload-panel { padding: 14px; background: #f2f4f8; margin-bottom: 18px; border-radius: 5px; }
+#status { font-weight: 600; margin-bottom: 0; }
+#error { color: #932323; background: #fff0ed; padding: 12px; border-left: 3px solid #932323; white-space: pre-wrap; }
+.result { border-top: 1px solid #dce2ea; padding-top: 14px; margin-top: 14px; }
+.result h3 { font-size: .95rem; margin: 0 0 8px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f2f4f8; padding: 14px; font: 14px/1.6 Consolas, monospace; border-radius: 5px; }
+footer { text-align: center; }
+@media (max-width: 600px) { main { padding: 20px 12px; } section { padding: 18px; } h1 { font-size: 1.9rem; } }

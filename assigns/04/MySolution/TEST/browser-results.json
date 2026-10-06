@@ -1,0 +1,103 @@
+{
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "browser_channel": "msedge",
+  "browser_version": "154.0.4258.53",
+  "checks": [
+    {
+      "check": "B1",
+      "requirements": [
+        "F1",
+        "F2",
+        "F4",
+        "F6",
+        "F9"
+      ],
+      "observed": "Manual input without upload; arithmetic returned 42; controls in required order.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B2",
+      "requirements": [
+        "F2",
+        "F8"
+      ],
+      "observed": "Dirty edits blocked tools and source replacement; Discard restored source; Apply increased revision and cleared results.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B3",
+      "requirements": [
+        "F1",
+        "F5",
+        "F6",
+        "F8"
+      ],
+      "observed": "Editable factorial and Fibonacci examples linted successfully and returned 120 and 55.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B4",
+      "requirements": [
+        "F5",
+        "F6"
+      ],
+      "observed": "Open expression listed x; closed edit passed; division by zero passed Lint but failed Interpret; bad argument reported input_error.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B5",
+      "requirements": [
+        "F4",
+        "F7"
+      ],
+      "observed": "Both placeholders reported not_implemented; Execute stayed disabled with an explanation.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B6",
+      "requirements": [
+        "F1",
+        "F3",
+        "F8"
+      ],
+      "observed": "Blank edits stayed available; invalid UTF-8 and oversized uploads preserved state; a valid upload replaced source.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B7",
+      "requirements": [
+        "F9"
+      ],
+      "observed": "Multiline source and HTML-like diagnostic stayed literal; no image element or injected script appeared.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B8",
+      "requirements": [
+        "F10"
+      ],
+      "observed": "Injected outage exposed busy state and blocked conflicts, preserved source, restored controls, and allowed real Lint retry.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B9",
+      "requirements": [
+        "F6",
+        "F10"
+      ],
+      "observed": "A real worker timeout preserved source; retry of the same source returned 42.",
+      "outcome": "passed"
+    },
+    {
+      "check": "B10",
+      "requirements": [
+        "F2",
+        "F4",
+        "F5"
+      ],
+      "observed": "Keyboard-only typing, Tab navigation, Apply, and Lint worked; statuses used text labels.",
+      "outcome": "passed"
+    }
+  ]
+}

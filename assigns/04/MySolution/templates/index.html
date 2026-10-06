@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LAMBDA workspace</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script defer src="{{ url_for('static', filename='view.js') }}"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">CS413 · Assignment 4</p>
+      <h1>LAMBDA workspace</h1>
+      <p>Load or enter a constructor expression, apply your changes, and try the language tools.</p>
+    </header>
+    <section aria-labelledby="source-heading">
+      <h2 id="source-heading">Source</h2>
+      <div class="source-bar">
+        <label for="source-menu">Load source</label>
+        <select id="source-menu">
+          <option value="">Choose a source…</option>
+          <option value="file">Choose File</option>
+          <option value="manual">Manual input</option>
+          <option value="factorial">Factorial (canned)</option>
+          <option value="fibonacci">Fibonacci (canned)</option>
+        </select>
+        <span id="source-info">Manual input · revision 0 · no applied source</span>
+      </div>
+      <div id="upload-panel" hidden>
+        <label for="source-file">UTF-8 text file (maximum 65,536 bytes)</label>
+        <input type="file" id="source-file">
+        <button id="upload">Load selected file</button>
+      </div>
+      <label for="editor">Constructor expression</label>
+      <textarea id="editor" rows="16" spellcheck="false" placeholder='D0Eop2("+", D0Eint(20), D0Eint(22))' aria-describedby="editor-help"></textarea>
+      <p id="editor-help">Use D0E constructors with positional literal arguments. Comments and multiline expressions are accepted. Apply changes before running tools.</p>
+      <div class="controls">
+        <button id="apply">Apply changes</button>
+        <button id="discard">Discard changes</button>
+        <span id="edit-status">No unapplied changes.</span>
+      </div>
+    </section>
+    <section aria-labelledby="tools-heading">
+      <h2 id="tools-heading">Language tools</h2>
+      <div class="controls" id="actions">
+        <button data-operation="lint">Lint</button>
+        <button data-operation="interpret">Interpret</button>
+        <button data-operation="typecheck">Type-check</button>
+        <button data-operation="compile">Compile</button>
+        <button data-operation="execute" aria-describedby="execute-help" disabled>Execute</button>
+      </div>
+      <p id="execute-help">Execute runs generated code. It is unavailable until compilation is implemented and produces an artifact.</p>
+      <p id="status" role="status" aria-live="polite">Loading application state…</p>
+      <p id="error" role="alert" hidden></p>
+    </section>
+    <section aria-labelledby="results-heading">
+      <h2 id="results-heading">Results</h2>
+      <div id="results"><p>No results for this revision.</p></div>
+    </section>
+    <footer>Local, single-user workspace. Type-checking and compilation are placeholders.</footer>
+  </main>
+</body>
+</html>
