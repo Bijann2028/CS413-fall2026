@@ -8,6 +8,11 @@ class StateError(ValueError):
     pass
 
 
+def editor_text(text):
+    """Use the same newline representation as an HTML textarea."""
+    return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
 @dataclass
 class Model:
     source: str | None = None
@@ -38,7 +43,7 @@ class Model:
         self.idle()
         if not isinstance(text, str):
             raise StateError("Editor contents must be text.")
-        self.draft = text
+        self.draft = editor_text(text)
 
     def validate(self, text):
         if not text.strip():
@@ -51,6 +56,7 @@ class Model:
             raise StateError("Source exceeds 65,536 UTF-8 bytes.")
 
     def _accept(self, text, name):
+        text = editor_text(text)
         self.source = self.draft = text
         self.name = name
         self.manual_pending = False

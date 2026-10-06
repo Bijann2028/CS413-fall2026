@@ -43,7 +43,7 @@ def smoke(channel="msedge", report=None):
 
             def record(check, requirements, observed):
                 checks.append({"check": check, "requirements": requirements, "observed": observed, "outcome": "passed"})
-                print(f"{check}: PASS — {observed}")
+                print(f"{check}: PASS - {observed}", flush=True)
 
             def apply_source(source):
                 editor.fill(source)
@@ -129,12 +129,12 @@ def smoke(channel="msedge", report=None):
             upload.click()
             expect(page.locator("#error")).to_contain_text("65,536")
             expect(page.locator("#source-info")).to_have_text(old_info)
-            source_file.set_input_files(ROOT / "samples" / "open.lambda")
+            source_file.set_input_files({"name": "open.lambda", "mimeType": "text/plain", "buffer": b'D0Evar("x")\r\n'})
             upload.click()
             expect(editor).to_have_value('D0Evar("x")\n')
             expect(page.locator("#source-info")).to_contain_text("open.lambda")
             run(lint, "language_error", "Undeclared variables: x")
-            record("B6", ["F1", "F3", "F8"], "Blank edits stayed available; invalid UTF-8 and oversized uploads preserved state; a valid upload replaced source.")
+            record("B6", ["F1", "F3", "F8"], "Blank edits stayed available; invalid UTF-8 and oversized uploads preserved state; a Windows CRLF upload replaced source and allowed Lint.")
 
             literal = '<img src=x onerror="window.injected=true">'
             source = "# first line\nD0Evar(" + repr(literal) + ")\n"

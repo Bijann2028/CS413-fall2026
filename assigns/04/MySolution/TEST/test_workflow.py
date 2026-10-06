@@ -191,6 +191,18 @@ class ControllerTests(unittest.TestCase):
             controller.upload(b"D0Eint(2)", "other.lambda")
         self.assertEqual(controller.state()["draft"], "unapplied")
 
+    def test_windows_upload_newlines_match_browser_editor_and_allow_actions(self):
+        controller = Controller(Model(), RecordingBackend())
+        controller.upload(b'D0Eint(1)\r\n', "windows.lambda")
+        state = controller.state()
+        self.assertEqual(state["source"], 'D0Eint(1)\n')
+        self.assertEqual(state["draft"], state["source"])
+        self.assertFalse(state["dirty"])
+        controller.start("lint", draft='D0Eint(1)\n')
+        self.assertEqual(wait(controller)["results"][-1]["outcome"], "success")
+        controller.change("draft", draft='D0Eint(1)\r\n')
+        self.assertFalse(controller.state()["dirty"])
+
 
 class HttpTests(unittest.TestCase):
     def setUp(self):

@@ -47,13 +47,18 @@ saved collections, persistence, and compiler-dependent features were excluded.
 ## Review and verification performed by Codex
 
 Codex checked supplied instructions against the implementation and F1–F10
-traceability, ran 23 automated tests, and executed 10 real browser scenarios.
+traceability, ran 24 automated tests, and executed 10 real browser scenarios.
 The first language test run found a missing parenthesis in the factorial
 sample; Codex corrected it and reran the suite successfully. Browser checks
 confirmed literal HTML-like text, keyboard controls, source rejection,
 placeholder outcomes, busy guards, injected backend failure, real worker
 timeout, and successful retry. The browser version and observations are
 recorded in `TEST/browser-results.json` and `TESTING.md`.
+
+The first clean-archive browser run found that Windows CRLF uploads were
+incorrectly treated as dirty after the textarea normalized them to LF. Codex
+normalized model source/draft line endings, added a controller regression
+test, and changed the browser upload scenario to exercise CRLF explicitly.
 
 Backend substitutes are explicitly limited to dispatch and fault injection.
 Arithmetic, factorial, Fibonacci, Lint, runtime failures, and subprocess

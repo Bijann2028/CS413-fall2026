@@ -10,7 +10,7 @@ they do not replace real Lint or Interpret. The setup/test commands are in
 and `TEST/browser_smoke.py`.
 
 Initial verification used Python 3.12.10 and Flask 3.1.2 on Windows 11.
-All **23 automated tests passed**. The browser run used Playwright 1.55.0
+All **24 automated tests passed**. The browser run used Playwright 1.55.0
 and Microsoft Edge **154.0.4258.53**; all **10 browser scenarios passed**.
 `TEST/browser-results.json` records browser/environment details and observed
 outcomes. No separate Chrome run or human visual usability study is claimed.
@@ -23,7 +23,7 @@ outcomes. No separate Chrome run or human visual usability study is claimed.
 | `ReaderTests` | Multiline/comments/signed integers accepted. Unsafe syntax, bad arity/types, arbitrary calls, and excessive size/nesting rejected. |
 | `BackendTests` | Real arithmetic returned 42; factorial 5/0/1 returned 120/1/1; Fibonacci 10/0/1 returned 55/0/1. Open Lint diagnostics were sorted; an evaluation spy confirmed closed division by zero was not evaluated during Lint. Input/runtime failures and nested-pair sentinels were classified correctly. Placeholders produced no artifact. Real worker timeout and launch failure were reported; retry passed. |
 | `ModelTests` | Direct tests without a browser/server verified manual entry, apply/discard, dirty/busy guards, rejected drafts, revision/result/artifact invalidation, unavailable Execute, failed recompilation, and stale artifact rejection. |
-| `ControllerTests` | Recording substitute verified four source-operation dispatches without view changes. A blocking failing backend demonstrated busy rejection, preservation, and real retry. A mismatched result became `backend_error`; upload/example replacement rules passed. |
+| `ControllerTests` | Recording substitute verified four source-operation dispatches without view changes. A blocking failing backend demonstrated busy rejection, preservation, and real retry. A mismatched result became `backend_error`; upload/example replacement rules and Windows newline normalization passed. |
 | `HttpTests` | Initial controls/menu/order, manual input, direct requests bypassing disabled controls, invalid UTF-8, unavailable Execute, and transport-size rejection passed using Flask's test client. |
 
 ## Browser smoke test
@@ -39,7 +39,7 @@ server, drives DOM controls in Edge, and checks displayed results and state.
 | B3 | Load Factorial and Fibonacci in turn; Lint and Interpret each. | Editable examples are closed and return 120 and 55. | Passed: both real Lint and Interpret results matched. |
 | B4 | Lint `D0Evar("x")`; edit to a closed expression; then lint/interpret division by zero and interpret a malformed constructor argument. | Undeclared x; closed success; runtime error after Lint success; distinct input error. | Passed: `language_error`, `success`, `runtime_error`, and `input_error` appeared with the expected diagnostics. |
 | B5 | Click Type-check and Compile; inspect Execute and its explanation. | Both placeholders say not implemented; Execute unavailable. | Passed: `not_implemented` outcomes and disabled Execute with generated-code explanation. |
-| B6 | Apply whitespace; inspect preserved state/draft; Discard; upload invalid UTF-8, oversized input, then a valid sample. | Rejected edits stay available; failed uploads preserve applied state; valid upload replaces it. | Passed: revisions/results remained after rejection; selected valid `open.lambda` loaded and linted. |
+| B6 | Apply whitespace; inspect preserved state/draft; Discard; upload invalid UTF-8, oversized input, then a valid CRLF sample. | Rejected edits stay available; failed uploads preserve applied state; Windows source loads without false dirty state. | Passed: revisions/results remained after rejection; valid CRLF `open.lambda` loaded and linted. |
 | B7 | Apply multiline source containing an HTML-like variable name; Lint; inspect DOM. | Source/output remain literal; result includes operation/revision/outcome; no injected element/script. | Passed: exact source and diagnostic text; no image element or injected global. |
 | B8 | Substitute a backend that waits, inspect busy controls, release it to raise an exception, then restore the real adapter and retry Lint. | Busy text and guards; backend failure preserves source; retry succeeds. | Passed: editing/replacement/actions blocked; `backend_error` shown; real Lint retry passed. Fault injection was intentional. |
 | B9 | Reduce the real adapter timeout to 0.001 seconds; Interpret; restore the normal adapter; repeat on the same source. | Worker termination, source preservation, control restoration, successful retry. | Passed: `timeout` followed by real `D0Vint(arg1=42)`. The shortened timeout is test-only; production uses 3 seconds. |
@@ -69,6 +69,7 @@ server, drives DOM controls in Edge, and checks displayed results and state.
 | Replacing editor text on every status response could erase current typing. | Draft responses update state/controls without replacing editor contents; accepted loads/apply/discard explicitly refresh the editor. B2/B6 check preservation. |
 | A returned `D0V000()` could be incorrectly displayed as successful output, especially inside nested pairs. | Recursive sentinel detection returns `runtime_error`; backend tests exercise direct and nested-pair failures. |
 | Lint success could incorrectly gate or promise successful interpretation. | Actions dispatch independently; Lint only checks closure. The division-by-zero test and B4 demonstrate the distinction. |
+| The first clean-archive browser run exposed CRLF source comparing unequal to the textarea's LF contents, leaving tools disabled after upload. | Normalize line endings in the model; add a Windows-upload controller regression test and make B6 upload explicit CRLF bytes. |
 
 ## Clean source verification
 

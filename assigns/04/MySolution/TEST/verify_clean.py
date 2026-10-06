@@ -70,7 +70,7 @@ def verify():
             browser = json.loads(browser_report.read_text(encoding="utf-8"))
             summary = {"source_commit": commit, "python": platform.python_version(),
                        "fresh_virtual_environment": True, "declared_dependency_install": "passed",
-                       "automated_tests": "23 passed", "documented_cli_startup": "passed",
+                       "automated_tests": "24 passed", "documented_cli_startup": "passed",
                        "browser_scenarios": "10 passed", "browser_version": browser["browser_version"]}
             (ROOT / "TEST" / "clean-results.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
             print("Clean checkout verification: PASS", flush=True)

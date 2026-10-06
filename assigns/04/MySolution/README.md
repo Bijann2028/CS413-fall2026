@@ -112,6 +112,8 @@ constructor argument errors are diagnosed when Lint or Interpret reads the
 applied text, allowing the editor to hold malformed programs for investigation.
 The reader allows at most **4,096 AST nodes** and **100 constructor nesting
 levels**. Successful value output is truncated after **16,384 characters**.
+Accepted text normalizes Windows CRLF and CR line endings to LF to match the
+browser editor; the original uploaded file is never modified.
 
 Each real Lint/Interpret operation runs in a separate Python process with a
 **3-second subprocess timeout**. On expiration Python kills and waits for that

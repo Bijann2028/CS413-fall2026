@@ -61,7 +61,7 @@
         "F3",
         "F8"
       ],
-      "observed": "Blank edits stayed available; invalid UTF-8 and oversized uploads preserved state; a valid upload replaced source.",
+      "observed": "Blank edits stayed available; invalid UTF-8 and oversized uploads preserved state; a Windows CRLF upload replaced source and allowed Lint.",
       "outcome": "passed"
     },
     {
