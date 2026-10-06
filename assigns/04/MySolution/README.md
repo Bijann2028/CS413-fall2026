@@ -8,11 +8,6 @@ Interpret evaluates the applied expression. Type-check and Compile explicitly
 report that they are not implemented. Execute is reserved for generated code
 and remains disabled because no compiler artifact exists.
 
-The documentation follows Assignment 3's short explanations, responsibility
-tables, identifiable checks, traceability, and separate AI transcript. The
-scope follows Assignment 4: saved collections, accounts, public hosting, and
-persistence across server restarts are excluded. Assignment 3's proposed
-compiler workflows and assumptions are not treated as implemented features.
 
 | File or directory | Purpose |
 | --- | --- |
@@ -140,7 +135,7 @@ memory usage. The supplied interpreter determines runtime semantics and uses
 Python recursion and integers. Browser automation was verified on Edge;
 Chrome support is offered by the test script but was not separately verified.
 
-## Reflection: AI-assisted draft for student review
+## Reflection: 
 
 MVC helped make source changes and operation results easier to reason about.
 The model owns the applied source, draft, revision, results, and artifact, so
