@@ -73,6 +73,22 @@ server, drives DOM controls in Edge, and checks displayed results and state.
 
 ## Clean source verification
 
-The final setup check uses a fresh Git archive of the submission and a new
-virtual environment, then installs the documented requirements and runs both
-test commands. The final observed result is recorded here after that check.
+`TEST/verify_clean.py` exported source commit `e06c27c` with `git archive`,
+extracted it into a temporary directory, and created a new virtual environment
+with no inherited site packages. Installation from `requirements-test.txt`
+(which includes `requirements.txt`) passed. All **24 automated tests** and
+**10 Edge browser scenarios** passed in that environment. The documented
+`app.py --port` startup served the expected page over loopback. The temporary
+checkout and environment were removed after verification.
+
+`TEST/clean-results.json` records the full source commit and observed outcomes.
+Only verification records/documentation were added after that source check.
+To repeat from a committed, clean submission directory on Windows:
+
+```powershell
+python TEST/verify_clean.py
+```
+
+This command needs package-index access and an installed Microsoft Edge. It
+creates and cleans an isolated environment under ignored `test-results/` and
+updates the clean-verification JSON record in the original submission.

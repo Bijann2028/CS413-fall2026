@@ -59,6 +59,10 @@ The first clean-archive browser run found that Windows CRLF uploads were
 incorrectly treated as dirty after the textarea normalized them to LF. Codex
 normalized model source/draft line endings, added a controller regression
 test, and changed the browser upload scenario to exercise CRLF explicitly.
+The corrected source commit `e06c27c` then passed fresh dependency installation,
+24 automated tests, CLI startup, and all 10 browser scenarios from a clean
+Git archive and isolated virtual environment. `TEST/clean-results.json`
+records this result; the temporary environment was removed.
 
 Backend substitutes are explicitly limited to dispatch and fault injection.
 Arithmetic, factorial, Fibonacci, Lint, runtime failures, and subprocess

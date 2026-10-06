@@ -68,6 +68,9 @@ Edge in headless mode. If Chrome is installed instead, run
 needed with either installed channel. The screenshot under `test-results/`
 is a local verification artifact and is excluded from Git. See `TESTING.md`
 for observed results, failure injection, and the F1–F10 mapping.
+Clean-archive verification also passed dependency installation, CLI startup,
+all 24 automated tests, and all 10 browser scenarios. The repeatable clean
+verification command and source commit are recorded in `TESTING.md`.
 
 ## Demonstration
 
