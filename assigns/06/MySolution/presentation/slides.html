@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compiling Extended LAMBDA — Bijan Nossoughi</title>
+<style>
+  :root { --ink:#142e40; --muted:#536a76; --teal:#087e83; --paper:#f8f9f5; --line:#d9e3df; --orange:#bd571e; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#d7dfdf; color:var(--ink); font-family:"Segoe UI",Arial,sans-serif; }
+  .slide { width:1280px; height:720px; margin:24px auto; padding:48px 64px; background:var(--paper); position:relative; overflow:hidden; break-after:page; display:flex; flex-direction:column; }
+  .slide:last-child { break-after:auto; }
+  .kicker { font-size:17px; font-weight:700; letter-spacing:2.4px; text-transform:uppercase; color:var(--teal); margin-bottom:12px; }
+  h1 { font-size:62px; line-height:1.06; letter-spacing:-2px; margin:15px 0 24px; font-weight:700; }
+  h2 { font-size:43px; line-height:1.12; letter-spacing:-1px; margin:0 0 27px; font-weight:650; }
+  h3 { font-size:23px; margin:0 0 15px; color:var(--teal); }
+  p,li { font-size:25px; line-height:1.43; }
+  p { margin:0 0 18px; }
+  ul { margin:0; padding-left:25px; }
+  li { margin:0 0 13px; }
+  .small { font-size:21px; line-height:1.4; }
+  .muted { color:var(--muted); }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+  .card { padding:25px 28px; background:white; border:1px solid var(--line); border-radius:10px; }
+  .card p:last-child { margin-bottom:0; }
+  .rule { border-left:5px solid var(--teal); padding:16px 23px; margin:18px 0; background:#eaf2ed; }
+  .code { font-family:Consolas,"Courier New",monospace; font-size:24px; line-height:1.5; white-space:pre-wrap; margin:0; }
+  .code.small { font-size:21px; }
+  .dark { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .dark h3 { color:#86ded1; }
+  .big { font-size:54px; font-weight:700; line-height:1.1; }
+  .accent { color:var(--teal); }
+  .orange { color:var(--orange); }
+  .tag { display:inline-block; color:var(--teal); background:#e3eeea; padding:5px 12px; border-radius:5px; font-size:19px; font-weight:600; }
+  .flow { display:flex; align-items:center; gap:15px; margin:15px 0 24px; }
+  .flow .box { flex:1; padding:25px 18px; text-align:center; background:#fff; border:1px solid var(--line); border-radius:8px; font-size:23px; font-weight:600; }
+  .arrow { color:var(--teal); font-size:31px; }
+  table { border-collapse:collapse; width:100%; font-size:23px; }
+  th { color:var(--teal); text-align:left; border-bottom:2px solid var(--line); }
+  td,th { padding:13px 16px; vertical-align:top; }
+  td { border-bottom:1px solid var(--line); }
+  th:first-child,td:first-child { padding-left:0; }
+  .compact td,.compact th { padding-top:9px; padding-bottom:9px; }
+  .bottom { max-width:920px; margin-top:23px; }
+  .footer { position:absolute; bottom:27px; left:64px; right:250px; border-top:1px solid var(--line); padding-top:12px; font-size:15px; color:var(--muted); display:flex; justify-content:space-between; }
+  .hero { background:var(--ink); color:#fff; }
+  .hero .kicker,.hero .accent { color:#86ded1; }
+  .hero .footer { color:#bfd0d4; border-color:#456071; }
+  .hero .muted { color:#c6d4d8; }
+  @page { size:13.333333in 7.5in; margin:0; }
+  @media print { body { background:white; } .slide { margin:0; print-color-adjust:exact; -webkit-print-color-adjust:exact; } }
+</style>
+</head>
+<body>
+
+<section class="slide hero">
+  <div class="kicker">CS413 · Midterm 1 · October 2026</div>
+  <h1>From extended LAMBDA<br>to <span class="accent">three pure forms.</span></h1>
+  <p style="font-size:29px;max-width:940px">A compositional compiler, Church encodings,<br>and one call-by-value evaluation engine.</p>
+  <div style="margin-top:42px"><p>Bijan Nossoughi</p><p class="muted small">Compile syntax → reduce pure terms → observe data</p></div>
+  <div class="footer"><span>Source, tests, and measured results in MySolution/</span><span>01 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">01 · Language contract</div><h2>Rich source. Minimal target.</h2>
+  <div class="cols">
+    <div class="card"><h3>Source AST</h3><p>Naturals, booleans, arithmetic,<br>comparisons, pairs, conditionals,<br>functions, let, and recursion.</p><p class="small muted">Uses the supplied Assignment 5 visitor interface unchanged.</p></div>
+    <div class="card dark"><h3>Target AST</h3><pre class="code">Var(name)
+Lam(name, body)
+App(function, argument)</pre><p class="small" style="margin-top:18px">No primitive numbers, operators, pairs,<br>or unresolved encoding names.</p></div>
+  </div>
+  <p class="bottom">Natural subtraction truncates at zero.<br>Conditionals test booleans; <span class="accent">and / or short-circuit</span>.</p>
+  <div class="footer"><span>Contract: Assign06.md and REQUIREMENTS.md</span><span>02 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">02 · Architecture</div><h2>One evaluator; explicit module boundaries.</h2>
+  <div class="flow"><div class="box">Source AST</div><span class="arrow">→</span><div class="box">Compiler visitor<br><span class="small muted">+ Church builders</span></div><span class="arrow">→</span><div class="box">Pure target AST</div></div>
+  <div class="cols">
+    <div class="card"><h3>Shared evaluation machine</h3><p>Accepts either AST.<br>Common application frames enforce<br>function → argument → application.</p></div>
+    <div class="card"><h3>Observation layer</h3><p>Builds pure target contexts.<br>Calls the same evaluator.<br>Inspects final inert data shapes.</p></div>
+  </div>
+  <p class="small bottom muted">Compiler never calls evaluation. Target reduction never calls source arithmetic.</p>
+  <div class="footer"><span>compiler.py · church.py · evaluator.py · observe.py</span><span>03 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">03 · Church representations</div><h2>Data becomes behavior.</h2>
+  <table><tr><th>Data</th><th>Pure lambda representation</th></tr>
+  <tr><td>True / false</td><td class="code">λt. λf. t &nbsp; / &nbsp; λt. λf. f</td></tr>
+  <tr><td>Natural 2</td><td class="code">λs. λz. s (s z)</td></tr>
+  <tr><td>Pair</td><td class="code">λa. λb. λp. p a b</td></tr>
+  <tr><td>Identity</td><td class="code">I = λw. w</td></tr></table>
+  <div class="rule bottom"><p class="small">A boolean chooses. A numeral iterates. A pair supplies two values to a selector.</p></div>
+  <div class="footer"><span>Every abbreviation expands to Var / Lam / App</span><span>04 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">04 · Evaluation strategy</div><h2>Weak, left-to-right call-by-value.</h2>
+  <div class="card dark"><pre class="code">(λx. body) value  →  body[x := value]
+
+Target value = lambda abstraction</pre></div>
+  <div class="cols" style="margin-top:25px"><div><h3>Application order</h3><p>1. Evaluate the function.<br>2. Evaluate the argument.<br>3. Substitute and count one beta step.</p></div><div><h3>Weak evaluation</h3><p>Stop at a lambda value.<br>Do not reduce under its binder.<br>Do not perform eta reduction.</p></div></div>
+  <div class="footer"><span>Explicit continuation stack; no separate source interpreter</span><span>05 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">05 · Bounded reduction</div><h2>The budget boundary is part of correctness.</h2>
+  <table><tr><th>Input</th><th>Budget</th><th>Outcome</th><th>Beta steps</th></tr>
+  <tr><td class="code">I</td><td>0</td><td>Completed value</td><td>0</td></tr>
+  <tr><td class="code">I I</td><td>0</td><td>Exhausted</td><td>0</td></tr>
+  <tr><td class="code">I I</td><td>1</td><td>Completed value</td><td>1</td></tr></table>
+  <div class="rule bottom"><p>Check the budget immediately before contraction.<br>A value on the final permitted step still completes.</p></div>
+  <p class="small muted bottom">Exhaustion reports insufficient resources. It does not prove nontermination.</p>
+  <div class="footer"><span>Execution and observation each have their own budget</span><span>06 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">06 · Lexical scope</div><h2>Fresh names prevent accidental capture.</h2>
+  <div class="cols"><div class="card"><h3>Substitution hazard</h3><pre class="code">(λy. x)[x := y]
+
+Wrong:   λy. y
+Correct: λy_1. y</pre></div><div class="card"><h3>Per-call naming supply</h3><p>Reserve all source names.<br>Reserve names in translated terms.<br>Choose the first unused suffix.</p><p class="small muted">Deterministic; no global counters.</p></div></div>
+  <div class="rule bottom"><p class="code">FV(C[e]) = FV(e)</p><p class="small">Let binds only its body. If fix binders coincide, the parameter shadows the function name.</p></div>
+  <div class="footer"><span>Open terms compile and substitute; execution requires closure</span><span>07 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">07 · Compositional translation</div><h2>Translate each constructor locally.</h2>
+  <div class="card dark"><pre class="code">C[x]                = x
+C[λx. e]            = λx. C[e]
+C[e1 e2]            = C[e1] C[e2]
+C[let x = e1 in e2] = (λx. C[e2]) C[e1]</pre></div>
+  <p class="bottom">Let's argument position preserves strict initializer evaluation.<br>Its lambda binds only the body.</p>
+  <p class="small muted bottom">Every child is checked, including unused branches and unapplied bodies.<br>Compiling LOOP returns syntax without executing it.</p>
+  <div class="footer"><span>D0ExpVisitor dispatch; input AST remains unchanged</span><span>08 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">08 · Control flow</div><h2>Delay both branches. Force the selected one.</h2>
+  <div class="card dark"><pre class="code">C[if c then t else f] =
+  (C[c] (λu. C[t]) (λv. C[f])) I</pre></div>
+  <div class="cols" style="margin-top:25px"><div><h3>Why thunks?</h3><p>Branch lambdas are already values.<br>The Church boolean selects one.<br>Applying I forces that thunk.</p></div><div><h3>Same rule for and / or</h3><p><span class="code">false and LOOP → false</span><br><span class="code">true or LOOP → true</span></p><p class="small muted">Ordinary target application stays strict.</p></div></div>
+  <div class="footer"><span>u and v are fresh, unused parameters</span><span>09 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">09 · Arithmetic</div><h2>Predecessor carries a two-number state.</h2>
+  <div class="flow"><div class="box">(0, 0)</div><span class="arrow">→</span><div class="box">(0, 1)</div><span class="arrow">→</span><div class="box">(1, 2)</div><span class="arrow">→</span><div class="box">(2, 3)</div></div>
+  <div class="cols"><div class="card"><h3>State transition</h3><pre class="code">(previous, current)
+   → (current, current + 1)</pre><p class="small muted" style="margin-top:15px">After n steps: (max(n − 1, 0), n).</p></div><div class="card"><h3>Derived operations</h3><p>Predecessor: first projection.<br>Subtraction: repeat predecessor.<br>Addition / multiplication: iteration.</p></div></div>
+  <p class="small bottom muted">The pair, successor, iteration, and projection all execute as pure beta reductions.</p>
+  <div class="footer"><span>Predecessor(0) = 0; subtraction truncates at zero</span><span>10 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">10 · Comparisons and booleans</div><h2>Build larger operations from closed terms.</h2>
+  <div class="cols"><div class="card dark"><pre class="code">LE m n = ZERO (SUB m n)
+LT m n = NOT (LE n m)
+GE m n = LE n m
+GT m n = NOT (LE m n)
+EQ m n = AND (LE m n)
+             (LE n m)</pre></div><div class="card"><h3>Two different obligations</h3><p>Library boolean combinators work<br>on already evaluated values.</p><p>Source and / or also preserve<br><span class="accent">short-circuit evaluation</span><br>through delayed branches.</p></div></div>
+  <p class="small muted bottom">Tests cover equal and unequal operands, both comparison outcomes, and complete boolean truth tables.</p>
+  <div class="footer"><span>Natural-number comparisons; no host arithmetic in target reduction</span><span>11 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">11 · Recursion</div><h2>Z delays recursive self-application.</h2>
+  <div class="card dark"><pre class="code">Z = λg. (λx. g (λv. x x v))
+        (λx. g (λv. x x v))
+
+C[fix f(x). e] = Z (λf. λx. C[e])</pre></div>
+  <div class="rule bottom"><p>The extra <span class="code">λv</span> makes the recursive argument a value.<br>Recursion unfolds when the function is called.</p></div>
+  <p class="small muted bottom">Ordinary Y unfolds eagerly under call-by-value.<br>A recursive function itself completes as a lambda before application.</p>
+  <div class="footer"><span>Factorial and Fibonacci exercise the recursive pipeline</span><span>12 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">12 · Decoding results</div><h2>Observe behavior through pure target contexts.</h2>
+  <div class="cols"><div class="card"><h3>Naturals</h3><pre class="code small">value STEP BASE
+
+STEP = λtail c z. c tail
+BASE = λc z. z</pre><p class="small" style="margin-top:15px">Reduce to an inert spine;<br>then count its nodes.</p></div><div class="card"><h3>Booleans and pairs</h3><p>Boolean: select one of two<br>distinct closed markers.</p><p>Pair: evaluate projections,<br>then observe each component.</p></div></div>
+  <p class="bottom small">Kind is explicit: Church zero and false have the same representation.<br>Computed values may contain redexes beneath lambdas.</p>
+  <div class="footer"><span>Separate aggregate observation budget; malformed / exhausted / completed</span><span>13 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">13 · Pipeline walkthrough</div><h2>2 + 3 × 4 evaluates to 14.</h2>
+  <div class="flow"><div class="box">Source AST<br><span class="small muted">2 + (3 * 4)</span></div><span class="arrow">→</span><div class="box">Pure term<br><span class="small muted">ADD N(2) (MUL N(3) N(4))</span></div><span class="arrow">→</span><div class="box">Observed natural<br><span class="big accent">14</span></div></div>
+  <div class="cols"><div class="card"><h3>Execution</h3><p><span class="big">4</span> beta steps<br><span class="small muted">Budget: 20,000</span></p></div><div class="card"><h3>Observation</h3><p><span class="big">25</span> beta steps<br><span class="small muted">Separate budget: 10,000</span></p></div></div>
+  <p class="small muted bottom">Source result, explicit expected answer, and target observation agree.<br>The saved target file expands every abbreviation shown here.</p>
+  <div class="footer"><span>results/arithmetic.lambda.txt · results/summary.json</span><span>14 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">14 · Recursive results</div><h2>The same pipeline handles recursion.</h2>
+  <table><tr><th>Program</th><th>Expected / observed</th><th>Execution</th><th>Observation</th></tr>
+  <tr><td>factorial(4)</td><td><strong>24 / 24</strong></td><td>471 steps</td><td>218 steps</td></tr>
+  <tr><td>Fibonacci(5)</td><td><strong>5 / 5</strong></td><td>1,794 steps</td><td>45 steps</td></tr></table>
+  <div class="card dark" style="margin-top:25px"><pre class="code small">fact(n) = if n == 0 then 1 else n * fact(n - 1)
+fib(n)  = if n <= 1 then n else fib(n - 1) + fib(n - 2)</pre></div>
+  <p class="small muted bottom">Both use Z, Church arithmetic, and delayed conditionals.<br>Neither answer is precomputed by the compiler.</p>
+  <div class="footer"><span>Budgets: 20,000 execution / 10,000 observation</span><span>15 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">15 · Divergence and strictness</div><h2>Skipping is selective; application stays strict.</h2>
+  <table class="compact"><tr><th>Source context</th><th>Target outcome</th></tr>
+  <tr><td class="code small">if true then 1 else LOOP</td><td>1</td></tr>
+  <tr><td class="code small">false and LOOP / true or LOOP</td><td>false / true</td></tr>
+  <tr><td class="code small">(λx. 0) LOOP</td><td>Budget exhausted</td></tr>
+  <tr><td class="code small">let x = LOOP in 2</td><td>Budget exhausted</td></tr>
+  <tr><td class="code small">fst (pair 2 LOOP)</td><td>Budget exhausted</td></tr></table>
+  <p class="bottom small">LOOP also compiles successfully.<br>Only execution uses a finite reduction budget.</p>
+  <div class="footer"><span>Tests include divergence in either pair component and selected branches</span><span>16 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">16 · Evidence</div><h2>Test obligations, not just examples.</h2>
+  <div class="cols"><div class="card"><h3>Automated coverage</h3><p><span class="big accent">49</span> unittest methods<br><span class="small muted">Plus parameterized grids and edge cases.</span></p><p><span class="big accent">14 / 14</span> required demos</p></div><div class="card"><h3>What the checks establish</h3><ul class="small"><li class="small">Capture avoidance and free variables</li><li class="small">Budgets, traversal order, immutability</li><li class="small">Every operator and short-circuit case</li><li class="small">Pure output; no evaluator in compilation</li><li class="small">Standalone submission packaging</li></ul></div></div>
+  <p class="small bottom muted">Each terminating case checks an explicit answer and the shared source result.<br>TESTING.md maps these checks to the specification.</p>
+  <div class="footer"><span>Negative literals and unsupported operators rejected even in unused code</span><span>17 / 19</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">17 · Correctness and limitations</div><h2>Semantic evidence with explicit limits.</h2>
+  <div class="rule"><p>For closed, well-typed programs returning naturals, booleans,<br>or finite data pairs, the compiled observation agrees<br>with the source result, given sufficient resources.</p></div>
+  <div class="cols"><div><h3>Why the claim is plausible</h3><p class="small">Local translation rules, capture avoidance,<br>strict application, selected thunks,<br>and delayed recursive calls.</p></div><div><h3>What remains outside the claim</h3><p class="small">Finite tests are not a proof.<br>Substitution can grow terms.<br>Observers are not universal validators.<br>Budget exhaustion does not prove divergence.</p></div></div>
+  <div class="footer"><span>No parser, static type checker, or web interface is required</span><span>18 / 19</span></div>
+</section>
+
+<section class="slide hero">
+  <div class="kicker">18 · Reproduce and inspect</div><h2>Run the complete pipeline.</h2>
+  <p class="muted small">From assigns/06/ · Python 3.12 or later · no runtime dependencies</p>
+  <pre class="code" style="font-size:25px;margin-top:22px">python -B -m unittest discover -s MySolution/TEST -t . -v
+
+python -B -m MySolution.demo</pre>
+  <p style="margin-top:38px">Design rules: <span class="accent">DESIGN.md</span><br>Coverage and measurements: <span class="accent">TESTING.md + results/</span></p>
+  <p class="small muted bottom">Sources: Assign06.md, REQUIREMENTS.md, the unchanged course AST,<br>and attributed Assignment 5 scope visitors. AI assistance is documented.</p>
+  <div class="footer"><span>Bijan Nossoughi · CS413 Midterm 1</span><span>19 / 19</span></div>
+</section>
+</body>
+</html>
