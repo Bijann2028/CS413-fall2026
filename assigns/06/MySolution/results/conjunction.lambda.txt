@@ -1,0 +1,1 @@
+((((lam t. (lam f. t)) (lam thunk_1. (lam t. (lam f. f)))) (lam thunk_2. (lam t. (lam f. f)))) (lam w. w))
