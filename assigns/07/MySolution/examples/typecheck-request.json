@@ -1,0 +1,8 @@
+{
+  "jsonrpc": "2.0",
+  "method": "lambda.typecheck",
+  "params": {
+    "source": "1 + 2"
+  },
+  "id": "typecheck"
+}
