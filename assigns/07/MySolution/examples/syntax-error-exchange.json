@@ -1,0 +1,22 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "method": "lambda.typecheck",
+    "params": {
+      "source": "if then"
+    },
+    "id": "syntax-error"
+  },
+  "http_status": 200,
+  "response": {
+    "error": {
+      "code": -32010,
+      "data": {
+        "diagnostic": "Expected an expression (<lambda>, line 1)"
+      },
+      "message": "LAMBDA syntax error"
+    },
+    "id": "syntax-error",
+    "jsonrpc": "2.0"
+  }
+}
