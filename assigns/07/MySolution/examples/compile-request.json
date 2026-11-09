@@ -1,0 +1,9 @@
+{
+  "jsonrpc": "2.0",
+  "method": "lambda.compile",
+  "params": {
+    "source": "1 + 2",
+    "target": "python"
+  },
+  "id": "compile"
+}
