@@ -1,0 +1,22 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "method": "lambda.typecheck",
+    "params": {
+      "source": "missing"
+    },
+    "id": "unbound-variable"
+  },
+  "http_status": 200,
+  "response": {
+    "error": {
+      "code": -32011,
+      "data": {
+        "diagnostic": "unbound variable 'missing'"
+      },
+      "message": "LAMBDA type error"
+    },
+    "id": "unbound-variable",
+    "jsonrpc": "2.0"
+  }
+}
