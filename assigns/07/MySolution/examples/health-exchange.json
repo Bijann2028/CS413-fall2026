@@ -1,0 +1,17 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "method": "service.health",
+    "params": {},
+    "id": "health"
+  },
+  "http_status": 200,
+  "response": {
+    "id": "health",
+    "jsonrpc": "2.0",
+    "result": {
+      "status": "ok",
+      "version": "1.0"
+    }
+  }
+}
