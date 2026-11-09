@@ -1,0 +1,22 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "method": "lambda.typecheck",
+    "params": {
+      "source": "1 + true"
+    },
+    "id": "type-error"
+  },
+  "http_status": 200,
+  "response": {
+    "error": {
+      "code": -32011,
+      "data": {
+        "diagnostic": "+: expected bool, got sint"
+      },
+      "message": "LAMBDA type error"
+    },
+    "id": "type-error",
+    "jsonrpc": "2.0"
+  }
+}
