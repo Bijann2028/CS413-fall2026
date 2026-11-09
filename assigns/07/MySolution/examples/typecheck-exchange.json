@@ -1,0 +1,18 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "method": "lambda.typecheck",
+    "params": {
+      "source": "1 + 2"
+    },
+    "id": "typecheck"
+  },
+  "http_status": 200,
+  "response": {
+    "id": "typecheck",
+    "jsonrpc": "2.0",
+    "result": {
+      "type": "sint"
+    }
+  }
+}
