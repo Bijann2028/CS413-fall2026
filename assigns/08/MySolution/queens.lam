@@ -1,0 +1,47 @@
+# Board is newest row first; events are (kind,col,row,board).
+# Codes: 0 try, 1 place, 2 reject, 3 backtrack, 4 solution, 5 done.
+let
+  # The extra lazy wrapper prevents p.1() running while this cell is forced.
+  emit = lam (p: ((sint, sint, sint, List[sint]), unit -> Strm[(sint, sint, sint, List[sint])])) =>
+    lazy_make(lam (u: unit) =>
+      stcn_cons(p.0, lazy_make(lam (v: unit) => lazy_eval(p.1()))));
+  extend = lam (p: (sint, List[sint])) => list_cons(p.0, p.1);
+  event = lam (p: (sint, sint, sint, List[sint])) => (p.0, p.1, p.2, p.3);
+  safe = fix safe(p: (sint, sint, List[sint], unit -> Strm[(sint, sint, sint, List[sint])], unit -> Strm[(sint, sint, sint, List[sint])])): Strm[(sint, sint, sint, List[sint])] =>
+    let
+      candidate = p.0; distance = p.1; board = p.2;
+      on_safe = p.3; on_conflict = p.4
+    in
+      if list_nilq(board) then on_safe()
+      else let previous = list_head(board) in
+        if previous == candidate then on_conflict()
+        else if previous == candidate - distance then on_conflict()
+        else if previous == candidate + distance then on_conflict()
+        else safe(candidate, distance + 1, list_tail(board), on_safe, on_conflict)
+      end
+    end;
+  solve = lam (size: sint) =>
+    let
+      empty : List[sint] = list_nil();
+      nil = lam (u: unit) => lazy_make(lam (v: unit) => stcn_nil());
+      success = lam (p: (List[sint], unit -> Strm[(sint, sint, sint, List[sint])])) => emit(event(4, -1, size, p.0), p.1);
+      exhausted = lam (u: unit) => emit(event(5, -1, 0, empty), nil);
+      search = fix search(p: (sint, sint, List[sint], (List[sint], unit -> Strm[(sint, sint, sint, List[sint])]) -> Strm[(sint, sint, sint, List[sint])], unit -> Strm[(sint, sint, sint, List[sint])])): Strm[(sint, sint, sint, List[sint])] =>
+        let row = p.0; column = p.1; board = p.2; win = p.3; fail = p.4 in
+          if row == size then win(board, fail)
+          else if column == size then fail()
+          else emit(event(0, column, row, board), lam (u: unit) =>
+            safe(column, 1, board,
+              lam (v: unit) =>
+                let next = extend(column, board) in
+                  emit(event(1, column, row, next), lam (w: unit) =>
+                    search(row + 1, 0, next, win, lam (x: unit) =>
+                      emit(event(3, column, row, board), lam (y: unit) =>
+                        search(row, column + 1, board, win, fail))))
+                end,
+              lam (v: unit) => emit(event(2, column, row, board),
+                lam (w: unit) => search(row, column + 1, board, win, fail))))
+        end
+    # Even the initial search dispatch is suspended until the first request.
+    in lazy_make(lam (u: unit) => lazy_eval(search(0, 0, empty, success, exhausted))) end
+in solve end

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>N-Queens Search · Assignment 8</title><link rel="stylesheet" href="/style.css"></head>
+<body><main><p class="eyebrow">CS413 / ASSIGNMENT 08</p><h1>Watch the search unfold.</h1><p>One candidate, one decision, one lazy event at a time.</p>
+<div class="layout"><div id="board" role="img" aria-label="Queen search board"></div><section>
+<label>Board size <select id="size"><option>4</option><option>5</option><option>6</option><option>7</option><option selected>8</option><option>9</option><option>10</option></select></label>
+<div class="controls"><button id="start">Start</button><button id="step">Step</button><button id="play">Play</button><button id="next">Next solution</button><button id="reset">Reset</button></div>
+<label>Delay <input id="speed" type="range" min="0" max="1000" value="120"> ms</label>
+<p><strong id="count">0</strong> solutions found</p><p id="status" role="status" aria-live="polite">Ready. Start a new search.</p>
+<p class="legend">Blue: try · Green: place · Red: reject · Amber: backtrack · Purple: solution</p>
+<ol id="log" aria-label="Recent events"></ol></section></div></main><script src="/client.js"></script></body></html>
